@@ -15,6 +15,7 @@ import {
 import CryptoJS from "crypto-js";
 import { User } from "../models/User";
 import { isAdmin } from "../utils/isAdmin";
+import { openGate } from "../utils/openGate";
 
 @ObjectType()
 class ErrorType {
@@ -238,6 +239,17 @@ export class UserResolver {
       },
       error: null,
     };
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async openTheGate(@Ctx() { payload }: MyContext): Promise<Boolean> {
+    const user = User.findOne({ where: { id: payload?.userId } });
+    if (!user) {
+      return false;
+    }
+    openGate();
+    return true;
   }
 
   @Mutation(() => ConnectionResponse)

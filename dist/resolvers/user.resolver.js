@@ -23,6 +23,7 @@ const type_graphql_1 = require("type-graphql");
 const crypto_js_1 = __importDefault(require("crypto-js"));
 const User_1 = require("../models/User");
 const isAdmin_1 = require("../utils/isAdmin");
+const openGate_1 = require("../utils/openGate");
 let ErrorType = class ErrorType {
 };
 __decorate([
@@ -233,6 +234,14 @@ let UserResolver = class UserResolver {
             error: null,
         };
     }
+    async openTheGate({ payload }) {
+        const user = User_1.User.findOne({ where: { id: payload === null || payload === void 0 ? void 0 : payload.userId } });
+        if (!user) {
+            return false;
+        }
+        (0, openGate_1.openGate)();
+        return true;
+    }
     async register(email, password) {
         const hashedPassword = await (0, bcryptjs_1.hash)(password, 10);
         const user = await User_1.User.findOne({ where: { email } });
@@ -329,6 +338,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "connect", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "openTheGate", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => ConnectionResponse),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
