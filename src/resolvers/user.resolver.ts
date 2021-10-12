@@ -244,11 +244,35 @@ export class UserResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async openTheGate(@Ctx() { payload }: MyContext): Promise<Boolean> {
-    const user = User.findOne({ where: { id: payload?.userId } });
+    const user = await User.findOne({ where: { id: payload?.userId } });
     if (!user) {
       return false;
     }
+    user.count++;
+    user.save();
     openGate();
+    return true;
+  }
+
+  @Query(() => [User], { nullable: true })
+  @UseMiddleware(isAuth)
+  async listUser(): Promise<User[] | null> {
+    const userList = await User.find();
+    if (!userList) {
+      return null;
+    }
+    return userList;
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  @UseMiddleware(isAdmin)
+  async deleteUser(@Arg("email") email: String): Promise<Boolean> {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      return false;
+    }
+    await User.remove(user);
     return true;
   }
 

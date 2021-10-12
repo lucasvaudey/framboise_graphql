@@ -235,11 +235,28 @@ let UserResolver = class UserResolver {
         };
     }
     async openTheGate({ payload }) {
-        const user = User_1.User.findOne({ where: { id: payload === null || payload === void 0 ? void 0 : payload.userId } });
+        const user = await User_1.User.findOne({ where: { id: payload === null || payload === void 0 ? void 0 : payload.userId } });
         if (!user) {
             return false;
         }
+        user.count++;
+        user.save();
         (0, openGate_1.openGate)();
+        return true;
+    }
+    async listUser() {
+        const userList = await User_1.User.find();
+        if (!userList) {
+            return null;
+        }
+        return userList;
+    }
+    async deleteUser(email) {
+        const user = await User_1.User.findOne({ where: { email: email } });
+        if (!user) {
+            return false;
+        }
+        await User_1.User.remove(user);
         return true;
     }
     async register(email, password) {
@@ -346,6 +363,22 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "openTheGate", null);
+__decorate([
+    (0, type_graphql_1.Query)(() => [User_1.User], { nullable: true }),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "listUser", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => Boolean),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    (0, type_graphql_1.UseMiddleware)(isAdmin_1.isAdmin),
+    __param(0, (0, type_graphql_1.Arg)("email")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "deleteUser", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => ConnectionResponse),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
