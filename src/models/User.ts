@@ -17,7 +17,6 @@ export class User extends BaseEntity {
 
   /**
    * Nombre de fois qu'on a ouvert le portail
-   * //TODO: classement
    */
   @Column({ default: 0 })
   @Field(() => Int, { defaultValue: 0 })
