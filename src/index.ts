@@ -4,7 +4,7 @@ import "reflect-metadata";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { User } from "./models/user";
+import { User } from "./models/User";
 import { UserResolver } from "./resolvers/user.resolver";
 
 const main = async () => {

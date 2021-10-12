@@ -28,7 +28,7 @@ require("reflect-metadata");
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
-const user_1 = require("./models/user");
+const User_1 = require("./models/User");
 const user_resolver_1 = require("./resolvers/user.resolver");
 const main = async () => {
     dotenv.config();
@@ -40,7 +40,7 @@ const main = async () => {
         password: "postgres",
         database: "framboise",
         synchronize: true,
-        entities: [user_1.User],
+        entities: [User_1.User],
     });
     const server = new apollo_server_express_1.ApolloServer({
         schema: await (0, type_graphql_1.buildSchema)({ resolvers: [user_resolver_1.UserResolver] }),

@@ -39,7 +39,8 @@ __decorate([
     __metadata("design:type", Boolean)
 ], User.prototype, "admin", void 0);
 User = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)(),
+    (0, type_graphql_1.ObjectType)()
 ], User);
 exports.User = User;
-//# sourceMappingURL=user.js.map
+//# sourceMappingURL=User.js.map
