@@ -59,6 +59,17 @@ __decorate([
 Token = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], Token);
+var PointageType;
+(function (PointageType) {
+    PointageType["START"] = "START";
+    PointageType["END"] = "END";
+    PointageType["BREAK_START"] = "BREAK_START";
+    PointageType["BREAK_END"] = "BREAK_END";
+})(PointageType || (PointageType = {}));
+(0, type_graphql_1.registerEnumType)(PointageType, {
+    name: "PointageType",
+    description: "Type de pointage ex: Arrivé, départ, pause",
+});
 let ConnectionResponse = class ConnectionResponse {
 };
 __decorate([
@@ -241,7 +252,10 @@ let UserResolver = class UserResolver {
         }
         user.count++;
         user.save();
-        (0, openGate_1.openGate)();
+        const result = await (0, openGate_1.openGate)();
+        if (!result) {
+            return false;
+        }
         return true;
     }
     async listUser() {
@@ -259,7 +273,7 @@ let UserResolver = class UserResolver {
         await User_1.User.remove(user);
         return true;
     }
-    async register(email, password) {
+    async register(email, password, name) {
         const hashedPassword = await (0, bcryptjs_1.hash)(password, 10);
         const user = await User_1.User.findOne({ where: { email } });
         if (user) {
@@ -301,7 +315,7 @@ let UserResolver = class UserResolver {
         await User_1.User.insert({
             email: email,
             password: hashedPassword,
-            admin: true,
+            name: name,
         });
         const userCreated = await User_1.User.findOne({ where: { email } });
         if (userCreated) {
@@ -385,8 +399,9 @@ __decorate([
     (0, type_graphql_1.UseMiddleware)(isAdmin_1.isAdmin),
     __param(0, (0, type_graphql_1.Arg)("email")),
     __param(1, (0, type_graphql_1.Arg)("password")),
+    __param(2, (0, type_graphql_1.Arg)("name")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 UserResolver = __decorate([

@@ -9,6 +9,7 @@ import {
   Mutation,
   ObjectType,
   Query,
+  registerEnumType,
   Resolver,
   UseMiddleware,
 } from "type-graphql";
@@ -38,6 +39,18 @@ class Token {
   @Field(() => String)
   refresh: string;
 }
+
+enum PointageType {
+  START = "START",
+  END = "END",
+  BREAK_START = "BREAK_START",
+  BREAK_END = "BREAK_END",
+}
+
+registerEnumType(PointageType, {
+  name: "PointageType",
+  description: "Type de pointage ex: Arrivé, départ, pause",
+});
 
 @ObjectType()
 class ConnectionResponse {
@@ -250,7 +263,10 @@ export class UserResolver {
     }
     user.count++;
     user.save();
-    openGate();
+    const result = await openGate();
+    if (!result) {
+      return false;
+    }
     return true;
   }
 
@@ -281,7 +297,8 @@ export class UserResolver {
   @UseMiddleware(isAdmin)
   async register(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Arg("name") name: string
   ): Promise<ConnectionResponse> {
     const hashedPassword = await hash(password, 10);
     const user = await User.findOne({ where: { email } });
@@ -324,7 +341,7 @@ export class UserResolver {
     await User.insert({
       email: email,
       password: hashedPassword,
-      admin: true,
+      name: name,
     });
     const userCreated = await User.findOne({ where: { email } });
     if (userCreated) {
@@ -344,4 +361,26 @@ export class UserResolver {
       token: null,
     };
   }
+
+  //TODO: connection et pointage my time
+  // @Mutation(() => Boolean)
+  // async pointage(): // @Arg("type") type: PointageType,
+  // // @Arg("date") time: Date
+  // Promise<boolean> {
+  //   return true;
+  // }
+
+  // @Mutation(() => Boolean)
+  // @UseMiddleware(isAuth)
+  // async myTimeConnection(
+  //   @Arg("emailMyTime") email: String,
+  //   @Arg("passwordMyTime") password: String
+  // ): Promise<boolean> {
+  //   const url = `https://api.mytime.fr/oauth/get-token?email=${email}&password=${password}`;
+  //   console.log(url);
+  //   //const response = await fetch(url, { method: "GET" });
+  //   //const data = await response.text();
+  //   //console.log(data);
+  //   return false;
+  // }
 }
