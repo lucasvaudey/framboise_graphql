@@ -1,0 +1,47 @@
+type Query {
+  me: UserResponse!
+  listUser: [User!]
+}
+
+type UserResponse {
+  user: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  count: Int
+  admin: Boolean
+}
+
+type Mutation {
+  changePassword(
+    newPassword: String!
+    oldPassword: String!
+  ): ConnectionResponse!
+  refreshToken: ConnectionResponse!
+  connect(password: String!, emailOrUsername: String!): ConnectionResponse!
+  openTheGate: Boolean!
+  deleteUser(email: String!): Boolean!
+  register(
+    name: String!
+    password: String!
+    email: String!
+  ): ConnectionResponse!
+}
+
+type ConnectionResponse {
+  token: Token
+  error: ErrorType
+}
+
+type Token {
+  access: String!
+  refresh: String!
+}
+
+type ErrorType {
+  label: String!
+  message: String!
+}

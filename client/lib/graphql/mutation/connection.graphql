@@ -1,0 +1,12 @@
+mutation Connect($password: String!, $emailOrUsername: String!) {
+  connect(password: $password, emailOrUsername: $emailOrUsername) {
+    error {
+      label
+      message
+    }
+    token {
+      access
+      refresh
+    }
+  }
+}

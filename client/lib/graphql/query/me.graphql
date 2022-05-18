@@ -1,0 +1,11 @@
+query Me {
+  me {
+    user {
+      id
+      name
+      email
+      count
+      admin
+    }
+  }
+}

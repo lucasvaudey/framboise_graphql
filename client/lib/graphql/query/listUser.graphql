@@ -1,0 +1,9 @@
+query ListUser {
+  listUser {
+    id
+    name
+    email
+    count
+    admin
+  }
+}
