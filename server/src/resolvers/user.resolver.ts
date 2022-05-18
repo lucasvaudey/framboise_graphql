@@ -198,7 +198,7 @@ export class UserResolver {
     var user = userEmail;
     if (!userEmail) {
       const userPseudo = await User.findOne({
-        where: { pseudo: emailOrPseudo },
+        where: { name: emailOrPseudo },
       });
       user = userPseudo;
       if (!userPseudo) {

@@ -137,6 +137,13 @@ class SplashScreenProvider extends ChangeNotifier {
           name: _response.data!.me.user!.name);
 
       Hive.box<User>("user").put("current", user);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const Home(),
+        ),
+        (route) => false,
+      );
     } else {
       return false;
     }
