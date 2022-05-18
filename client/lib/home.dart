@@ -1,4 +1,7 @@
+import 'package:artemis/artemis.dart';
 import 'package:flutter/material.dart';
+import 'package:framboise/graphql/graphql_api.dart';
+import 'package:framboise/graphql/utils.dart';
 import 'package:framboise/models/user.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -18,8 +21,17 @@ class _HomeState extends State<Home> {
         children: [
           Center(
             child: TextButton(
-              onPressed: () {
-                //TODO: Open the gate
+              onPressed: () async {
+                ArtemisClient _client = getGraphQlClient(user.token?.access);
+                final res = await _client.execute(OpenTheGateMutation());
+                if (res.hasErrors || res.data?.openTheGate != true) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Impossible d'ouvrir la barrière"),
+                    ),
+                  );
+                  return;
+                }
               },
               child: Text(
                 "Ouvrir la barrière",
